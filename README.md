@@ -22,7 +22,7 @@
 
 # Further Description
 
-## Shift Module (NewShift)
+## Shift Module 
 
 ### Overview
 `NewShift` is a VHDL module designed to perform data shifting operations, commonly used in image processing tasks like JPEG encoding. This module serially receives image data, shifts it for normalization or other processing needs, and outputs the shifted data.
@@ -55,7 +55,7 @@ The module operates in three main states controlled by an internal state machine
 - The shift operation in the `Shift` state is crucial for centering the pixel value range around zero, a common requirement in image processing algorithms.
 
 
-## NewDCT2D Module
+## DCT2D Module
 
 ### Overview
 `NewDCT2D` is a VHDL module designed to perform a 2-dimensional Discrete Cosine Transform (DCT) on 8x8 blocks of image data. This operation is a key part of the JPEG image compression process, converting spatial pixel data into frequency domain coefficients.
@@ -86,6 +86,66 @@ The operation starts when 64 bytes of data (representing an 8x8 image block) are
 - It works on a block-by-block basis, processing 8x8 blocks of data which is standard in JPEG compression.
 
 
+## Quantization Module
+
+### Overview
+`NewQuantization` is a VHDL module designed for quantizing the DCT coefficients in the JPEG compression process. Quantization is critical for compressing the image data by reducing the precision of the DCT coefficients, thereby retaining only the most significant parts of the data.
+
+### Port Descriptions
+- `CLK`: Clock input for synchronization.
+- `Input_Valid`: Signal indicating when the input data `A_In` is valid.
+- `Output_Valid`: Signal indicating when the output data `B_out` is valid.
+- `A_In`: 12-bit input data port for the incoming DCT coefficients.
+- `B_out`: 8-bit output data port for the quantized coefficients.
+
+### Internal Behavior
+The `NewQuantization` module operates through a finite state machine (FSM) with two main states:
+1. **Input**: Captures incoming DCT coefficients into an internal RAM when `Input_Valid` is asserted.
+2. **Output**: Quantizes the coefficients by truncating them and then outputs the significant bits.
+
+### Quantization Process
+The quantization in this module is performed by truncating the least significant bits from the 12-bit input coefficients, effectively reducing each to 8 bits. This process decreases data size, which is essential for the compression efficiency in JPEG encoding.
+
+### Example Operation
+- During the `Input` state, the module stores the 12-bit DCT coefficients in internal RAM as they arrive.
+- In the `Output` state, the module processes this RAM-stored data by truncating each coefficient to its most significant 8 bits for output, thereby completing the quantization step.
+
+### Key Points
+- `NewQuantization` is pivotal in the JPEG encoding pipeline, impacting both the compression ratio and the image quality.
+- The module interfaces directly with the DCT coefficients, aligning with the JPEG standard's typical block processing approach, which operates on 8x8 pixel blocks.
+
+
+## RLC Module
+
+### Overview
+`NewRLC` (Run-Length Coding) is a VHDL module integral to the JPEG encoding process, specifically designed to compress the quantized DCT coefficients through run-length encoding. This process reduces the size of data blocks by encoding sequences of identical values compactly.
+
+### Port Descriptions
+- `CLK`: Clock input for synchronization.
+- `Input_Valid`: Signal indicating when the input data `A_In` is valid.
+- `Output_Valid`: Signal to indicate when the output data `B_out` is valid.
+- `A_In`: 8-bit input data port for the quantized DCT coefficients.
+- `B_out`: Custom data type `Vector_3Bytes` output port for the encoded data.
+
+### Internal Behavior
+`NewRLC` operates in several states, forming part of a state machine:
+1. **Input**: Captures incoming quantized data into an internal buffer.
+2. **DC_Encoding**: Encodes the DC coefficient (the first coefficient in each block) using differential encoding.
+3. **AC_Encoding**: Encodes the AC coefficients (the remaining coefficients) using run-length encoding.
+4. **Output**: Outputs the run-length encoded data.
+
+### Encoding Process
+- DC coefficients are encoded by calculating the difference from the previous block's DC coefficient and then encoding this difference.
+- AC coefficients are encoded by counting consecutive zeros followed by the next non-zero value, producing a pair of values: the number of zeros and the actual non-zero value.
+
+### Example Operation
+- In the `Input` state, the module stores the incoming data until all required coefficients are received.
+- The `DC_Encoding` and `AC_Encoding` states process the data to apply the run-length encoding algorithm.
+- In the `Output` state, the module provides the run-length encoded data, ready for further processing or storage.
+
+### Key Points
+- `NewRLC` is crucial for the JPEG compression efficiency, significantly reducing the data size after quantization.
+- The module deals with one 8x8 block of image data at a time, consistent with the JPEG standard block processing.
 
 
 
