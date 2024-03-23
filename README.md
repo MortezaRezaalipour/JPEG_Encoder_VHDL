@@ -1,5 +1,7 @@
 # A Simple JPEG Encoder in VHDL
 
+An Exercise in a course called "Advanced VLSI" in my MSc program.
+This project aims to design a simple JPEG Encoder that is synthesizable and provides a basic understanding of a simplified JPEG compression algorithm. 
 
 ## Modules Description
 - `Shift.vhd`: Preprocesses the input data by normalizing it.
