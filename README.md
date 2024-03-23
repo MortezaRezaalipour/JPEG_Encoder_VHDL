@@ -9,16 +9,37 @@
 - `NewJPEG_Package.vhd`: Contains common definitions and utilities used by the other modules.
 - `JPEG_Encoder.vhd`: The top-level module that integrates all the stages of the JPEG encoding process.
 
-## How to Use
-1. Clone the repository to your local machine.
-2. Open the project in your VHDL synthesis or simulation tool.
-3. Ensure the tool recognizes the `src` directory where the module files are located.
-4. Compile and simulate the `JPEG_Encoder.vhd` to verify the functionality.
-5. Synthesize the design to generate the bitstream for FPGA or ASIC implementation.
+---
 
-## Prerequisites
-- VHDL synthesis and simulation tool (e.g., Xilinx Vivado, ModelSim, or similar).
-- Basic understanding of VHDL and digital design principles.
+### Requirements
+
+Install ghdl to compile codes and gtkwave to show signals visually.
+
+- Linux
+
+```bash
+sudo apt-get install ghdl gtkwave
+```
+
+- Mac
+
+You can also install scansion instead of gtkwave.
+
+```zsh
+brew install ghdl gtkwave
+```
+
+- Windows
+
+Install make, ghdl and gtkwave using [msys2](https://www.msys2.org/)
+
+[make](https://packages.msys2.org/package/make)
+
+[ghdl](https://packages.msys2.org/base/mingw-w64-ghdl)
+
+[gtkwave](https://packages.msys2.org/base/mingw-w64-gtkwave)
+
+---
 
 # Further Description
 
